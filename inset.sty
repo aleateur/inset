@@ -1,0 +1,88 @@
+\ProvidesPackage{inset}
+\RequirePackage{expl3}
+\RequirePackage{xparse}
+\RequirePackage{graphicx,xcolor}
+
+\ExplSyntaxOn
+
+\box_new:N \l__inset_box
+\box_new:N \l__inset_big_box
+\dim_new:N \l__inset_width_dim
+\tl_new:N \l__inset_position_tl
+
+\keys_define:nn {inset} {
+  width .dim_set:N = \l__inset_big_width_dim,
+  inset / width .fp_set:N = \l__inset_width_fp,
+  border / width .dim_set:N = \l__inset_border_width_dim,
+  border / color .tl_set:N = \l__inset_border_color_tl,
+   position .choices:nn =
+    {topleft,topright,bottomleft,bottomright}
+    {\tl_set:No \l__inset_position_tl{\l_keys_choice_tl}},
+
+  width .initial:n = {\textwidth},
+  inset / width .initial:n = {.4},
+  border / color .initial:n = {white},
+  border / width .initial:n = {2pt},
+  position .initial:n = {bottomleft}
+}
+
+\cs_new:Nn \inset:nn {
+  \bgroup
+  \dim_set:Nn \fboxsep {\l__inset_border_width_dim}
+  \hbox_set:Nn \l__inset_big_box {\includegraphics[width=\l__inset_big_width_dim]{#1}}
+  \hbox_set:Nn \l__inset_box {
+    \colorbox{\l__inset_border_color_tl}{
+      \includegraphics[width=\fp_use:N \l__inset_width_fp\l__inset_big_width_dim]{#2}
+    }
+  }
+  \use:c {inset_\l__inset_position_tl :}
+  \egroup
+}
+\cs_new:Nn \inset_bottomright: {
+  \box_set_trim:Nnnnn \l__inset_box {0pt}{\fboxsep}{\fboxsep}{0pt}
+  \box_clip:N \l__inset_box
+
+  \hbox_unpack_drop:N \l__inset_big_box
+  \llap{\hbox_unpack_drop:N \l__inset_box}
+}
+\cs_new:Nn \inset_bottomleft: {
+  \box_set_trim:Nnnnn \l__inset_box {\fboxsep}{\fboxsep}{0pt}{0pt}
+  \box_clip:N \l__inset_box
+  
+  \hbox_unpack_drop:N \l__inset_big_box
+  \hspace{-\l__inset_big_width_dim}
+  \rlap{\hbox_unpack_drop:N \l__inset_box}
+  \hspace*{\l__inset_big_width_dim}
+}
+\cs_new:Nn \inset_topleft: {
+  \box_set_trim:Nnnnn \l__inset_box {\fboxsep}{0pt}{0pt}{\fboxsep}
+  \box_clip:N \l__inset_box
+
+  \dim_set:Nn \l_tmpa_dim {\box_ht:N \l__inset_big_box}
+  \dim_sub:Nn \l_tmpa_dim {\box_ht:N \l__inset_box}
+  \hbox_unpack_drop:N \l__inset_big_box
+  \hspace*{-\l__inset_big_width_dim}
+  \rlap{\raisebox{\l_tmpa_dim}{\hbox_unpack_drop:N \l__inset_box}}
+  \hspace*{\l__inset_big_width_dim}
+}
+
+\cs_new:Nn \inset_topright: {
+  \box_set_trim:Nnnnn \l__inset_box {0pt}{0pt}{\fboxsep}{\fboxsep}
+  \box_clip:N \l__inset_box
+
+  \dim_set:Nn \l_tmpa_dim {\box_ht:N \l__inset_big_box}
+  \dim_sub:Nn \l_tmpa_dim {\box_ht:N \l__inset_box}
+  \hbox_unpack_drop:N \l__inset_big_box
+  \llap{\raisebox{\l_tmpa_dim}{\hbox_unpack_drop:N \l__inset_box}}
+}
+
+\NewDocumentCommand \inset{O{}mm}{
+  \bgroup
+  \keys_set:nn { inset } {#1}
+  \inset:nn {#2}{#3}
+  \egroup
+  \ignorespaces
+}
+\newcommand\insetsetup[1]{\keys_set:nn{inset}{#1}\ignorespaces}
+
+\ExplSyntaxOff
