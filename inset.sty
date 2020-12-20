@@ -22,7 +22,7 @@
   width .initial:n = {\textwidth},
   inset / width .initial:n = {.4},
   border / color .initial:n = {white},
-  border / width .initial:n = {2pt},
+  border / width .initial:n = {0},
   position .initial:n = {bottomleft}
 }
 
@@ -39,14 +39,13 @@
   \egroup
 }
 \cs_new:Nn \inset_bottomright: {
-  \box_set_trim:Nnnnn \l__inset_box {0pt}{\fboxsep}{\fboxsep}{0pt}
+  \box_set_trim:Nnnnn \l__inset_box {0pt}{\l__inset_border_width_dim}{\l__inset_border_width_dim}{0pt}
   \box_clip:N \l__inset_box
-
   \hbox_unpack_drop:N \l__inset_big_box
   \llap{\hbox_unpack_drop:N \l__inset_box}
 }
 \cs_new:Nn \inset_bottomleft: {
-  \box_set_trim:Nnnnn \l__inset_box {\fboxsep}{\fboxsep}{0pt}{0pt}
+  \box_set_trim:Nnnnn \l__inset_box {\l__inset_border_width_dim}{\l__inset_border_width_dim}{0pt}{0pt}
   \box_clip:N \l__inset_box
   
   \hbox_unpack_drop:N \l__inset_big_box
@@ -55,7 +54,7 @@
   \hspace*{\l__inset_big_width_dim}
 }
 \cs_new:Nn \inset_topleft: {
-  \box_set_trim:Nnnnn \l__inset_box {\fboxsep}{0pt}{0pt}{\fboxsep}
+  \box_set_trim:Nnnnn \l__inset_box {\l__inset_border_width_dim}{0pt}{0pt}{\l__inset_border_width_dim}
   \box_clip:N \l__inset_box
 
   \dim_set:Nn \l_tmpa_dim {\box_ht:N \l__inset_big_box}
@@ -67,7 +66,7 @@
 }
 
 \cs_new:Nn \inset_topright: {
-  \box_set_trim:Nnnnn \l__inset_box {0pt}{0pt}{\fboxsep}{\fboxsep}
+  \box_set_trim:Nnnnn \l__inset_box {0pt}{0pt}{\l__inset_border_width_dim}{\l__inset_border_width_dim}
   \box_clip:N \l__inset_box
 
   \dim_set:Nn \l_tmpa_dim {\box_ht:N \l__inset_big_box}
