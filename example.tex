@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage{inset}
+%\usepackage{showframe}
+
+\setlength\parindent{0pt}
+
+\newcommand\fileA {bensnow.jpg}
+\newcommand\fileB {bensnow2.jpg}
+
+\insetsetup{border/width=1pt}
+
+\begin{document}
+\insetsetup{width=.5\textwidth}
+\begin{minipage}{\textwidth}  
+  \inset[position=topleft]{\fileA}{\fileB}\hfill
+  \inset[position=topright]{\fileA}{\fileB}
+\end{minipage}
+
+
+\begin{center}
+  \insetsetup{border/color = red}
+  \hfill%
+  \inset[position=bottomleft,
+         border/color=blue,
+         border/width=3pt,
+         inset/width=.3]{\fileA}{\fileB}
+  \hfill%
+  \inset[position=bottomright, inset/width=.25]{\fileA}{\fileB}
+  \hfill\hspace*{0pt}%
+\end{center}
+\par
+
+\insetsetup{width=\textwidth,border/width=5pt}
+\inset{\fileA}{\fileB}
+
+\inset[position=topright]{\fileB}{\fileA}
+
+\end{document}
